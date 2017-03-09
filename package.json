@@ -4,7 +4,8 @@
   "description": "A practice crud RESTful api.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "DATABASE=demo-api DBPORT=3000 APIPORT=4000 banannas=kookoo node app.js"
   },
   "repository": {
     "type": "git",
