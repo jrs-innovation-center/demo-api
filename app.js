@@ -19,17 +19,6 @@ app.get('/automobiles', function (req, res, next) {
   })
 })
 
-app.get('/sales/:driverID', function (req, res, next) {
-
-  listSalesByDriver(req.params.driverID,  function(err, sales) {
-    if (err) next(new HTTPError(err.status, err.message, err))
-    res.status(200).send(sales)
-  })
-})
-
-
-
-
 app.post('/automobiles', function(req, res, next) {
 
     addAuto(req.body, function(err, auto) {
@@ -45,6 +34,19 @@ app.get('/automobiles/:autoId', function(req, res, next) {
       res.status(200).send(auto)
     })
 })
+
+
+/////////////////////////
+//  drivers
+/////////////////////////
+app.get('/drivers/:driverID', function (req, res, next) {
+
+  listSalesByDriver(req.params.driverID,  function(err, sales) {
+    if (err) next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(sales)
+  })
+})
+
 
 
 app.get('/', function (req, res) {
