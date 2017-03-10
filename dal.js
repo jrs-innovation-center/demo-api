@@ -17,7 +17,9 @@ const dal = {
     getAuto: getAuto,
     addAuto: addAuto,
     listAutos: listAutos,
-    listSalesByDriver: listSalesByDriver
+    listDrivers: listDrivers,
+    getDriver: getDriver,
+    getDriverWithSales: getDriverWithSales
 }
 
 module.exports = dal
@@ -26,22 +28,16 @@ module.exports = dal
 ///   Autos
 ////////////////////////
 function listAutos(cb) {
-
     db.query('autos', {
         include_docs: true
     }, function(err, autos) {
-
         if (err) return cb(err)
-
         const result = compose(
             map(doc => removeTypeProperty(doc)),
             map(row => row.doc)
         )(path(['rows'], autos))
-
         cb(null, result)
-        //cb(null, map(row => row.doc, path(['rows'], autos)))
     })
-
 }
 
 
@@ -73,9 +69,38 @@ function addAuto(auto, cb) {
 }
 
 ////////////////////////
-///  sales by driver
+///  drivers
 ////////////////////////
-function listSalesByDriver(driverID, cb) {
+
+function listDrivers(cb) {
+    db.query('drivers', {
+        include_docs: true
+    }, function(err, autos) {
+        if (err) return cb(err)
+        const result = compose(
+            map(doc => removeTypeProperty(doc)),
+            map(row => row.doc)
+        )(path(['rows'], autos))
+        cb(null, result)
+    })
+}
+
+function getDriver(driverID, cb) {
+    db.query('drivers', {
+        include_docs: true,
+        key: driverID,
+    }, function(err, driver) {
+        if (err) return cb(err)
+        // map over query results and return the docs
+        // grab the first doc (driver) from the docs using lensIndex()
+        const docs = map(row => row.doc)(path(['rows'], driver))
+        const newDriverDoc = view(lensIndex(0), docs)
+        cb(null, newDriverDoc)
+    })
+}
+
+
+function getDriverWithSales(driverID, cb) {
     db.query('sales', {
         include_docs: true,
         start_key: [driverID, 1],
